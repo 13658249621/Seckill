@@ -3,6 +3,7 @@ package cn.hfbin.seckill.controller;
 import cn.hfbin.seckill.common.Const;
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.exception.HfbinException;
+import cn.hfbin.seckill.mq.MQSender;
 import cn.hfbin.seckill.param.LoginParam;
 import cn.hfbin.seckill.redis.RedisService;
 import cn.hfbin.seckill.redis.UserKey;
@@ -35,6 +36,8 @@ public class LoginController {
     RedisService redisService;
     @Autowired
     UserService userService;
+    @Autowired
+    MQSender mqSender;
     @RequestMapping("/login")
     @ResponseBody
     public Result<User> doLogin(HttpServletResponse response, HttpSession session , @Valid LoginParam loginParam) {
@@ -43,6 +46,7 @@ public class LoginController {
             CookieUtil.writeLoginToken(response,session.getId());
             redisService.set(UserKey.getByName , session.getId() ,login.getData(), Const.RedisCacheExtime.REDIS_SESSION_EXTIME );
         }
+        mqSender.sendUserMessage(JsonUtil.obj2String(login));
         return login;
     }
 

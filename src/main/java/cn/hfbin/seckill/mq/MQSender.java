@@ -22,4 +22,9 @@ public class MQSender {
         amqpTemplate.convertAndSend(MQConfig.MIAOSHA_QUEUE, msg);
     }
 
+    public void sendUserMessage(String msg) {
+        log.info("send message:" + msg);
+        amqpTemplate.convertAndSend(MQConfig.USER_QUEUE, msg);
+    }
+
 }
