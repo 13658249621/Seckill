@@ -50,8 +50,9 @@ under the License.
    | The path to the local repository maven will use to store artifacts.
    |
    | Default: ${user.home}/.m2/repository
-  <localRepository>/path/to/local/repo</localRepository>
-  -->
+   -->
+  <localRepository>/Users/admin/IdeaProjects/Seckill/repository</localRepository>
+
 
   <!-- interactiveMode
    | This will determine whether maven prompts you when it needs input. If set to false,
@@ -144,26 +145,15 @@ under the License.
    | server for that repository.
    |-->
   <mirrors>
-    <!-- mirror
-     | Specifies a repository mirror site to use instead of a given repository. The repository that
-     | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used
-     | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.
-     |
     <mirror>
-      <id>mirrorId</id>
-      <mirrorOf>repositoryId</mirrorOf>
-      <name>Human Readable Name for this Mirror.</name>
-      <url>http://my.repository.com/repo/path</url>
-    </mirror>
-     -->
-    <mirror>
-      <id>maven-default-http-blocker</id>
-      <mirrorOf>external:http:*</mirrorOf>
-      <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
-      <url>http://0.0.0.0/</url>
-      <blocked>true</blocked>
+      <id>aliyunmaven</id>
+      <mirrorOf>central</mirrorOf>
+      <name>阿里云公共仓库</name>
+      <url>https://maven.aliyun.com/repository/public</url>
     </mirror>
   </mirrors>
+
+
 
   <!-- profiles
    | This is a list of profiles which can be activated in a variety of ways, and which can modify
@@ -251,6 +241,14 @@ under the License.
       </properties>
     </profile>
     -->
+    <profile>
+      <repositories>
+        <repository>
+          <id>httpcentral</id>
+          <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+      </repositories>
+    </profile>
   </profiles>
 
   <!-- activeProfiles
