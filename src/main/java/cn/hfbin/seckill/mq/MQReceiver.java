@@ -51,4 +51,8 @@ public class MQReceiver {
         //减库存 下订单 写入秒杀订单
         seckillOrderService.insert(user, goods);
     }
+    @RabbitListener(queues = MQConfig.USER_QUEUE)
+    public void receiveUser(String message) {
+        log.info("receive message:" + message);
+    }
 }
