@@ -23,3 +23,7 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### 忽略setting.xml和.mvn ###
+settings.xml
+.mvn
