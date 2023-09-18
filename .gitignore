@@ -26,4 +26,4 @@
 
 ### 忽略setting.xml和.mvn ###
 settings.xml
-.mvn
+.mvn/
