@@ -2,7 +2,10 @@ package cn.hfbin.seckill.service;
 
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.param.LoginParam;
+import cn.hfbin.seckill.param.UserParam;
 import cn.hfbin.seckill.result.Result;
+
+import java.util.List;
 
 /**
  * My Blog : www.hfbin.cn
@@ -14,4 +17,8 @@ import cn.hfbin.seckill.result.Result;
  */
 public interface UserService {
     Result<User> login(LoginParam loginParam);
+
+    Result<List<User>> getUserInfoByKeyword(String keyword);
+
+    Result<User> createUser(UserParam userParam);
 }

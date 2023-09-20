@@ -28,4 +28,39 @@
         WHERE phone=#{phone}
     </select>
 
+    <select id="getUserInfoByKeyword" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from user
+        WHERE phone=#{keyword} or user_name=#{keyword}
+    </select>
+    <!--添加用户，只有用户名和密码必填-->
+    <insert id="createUser" parameterType="cn.hfbin.seckill.entity.User">
+        INSERT INTO user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userName != null">user_name,</if>
+            <if test="password != null">password,</if>
+            <if test="phone != null">phone,</if>
+            <if test="salt != null">salt,</if>
+            <if test="head != null">head,</if>
+            <if test="loginCount != null">login_count,</if>
+            <if test="registerDate != null">register_date,</if>
+            <if test="lastLoginDate != null">last_login_date,</if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="userName != null">#{userName, jdbcType=VARCHAR},</if>
+            <if test="password != null">#{password, jdbcType=VARCHAR},</if>
+            <if test="phone != null">#{phone, jdbcType=VARCHAR},</if>
+            <if test="salt != null">#{salt, jdbcType=VARCHAR},</if>
+            <if test="head != null">#{head, jdbcType=VARCHAR},</if>
+            <if test="loginCount != null">#{loginCount, jdbcType=INTEGER},</if>
+            <if test="registerDate != null">#{registerDate, jdbcType=TIMESTAMP},</if>
+            <if test="lastLoginDate != null">#{lastLoginDate, jdbcType=TIMESTAMP},</if>
+        </trim>
+    </insert>
+
+
+
+
+
 </mapper>
