@@ -16,9 +16,9 @@ import java.util.List;
  * Such description:
  */
 public interface UserService {
-    Result<User> login(LoginParam loginParam);
+    Result<User> login(LoginParam loginParam) throws Exception;
 
     Result<List<User>> getUserInfoByKeyword(String keyword);
 
-    Result<User> createUser(UserParam userParam);
+    Result<User> createUser(UserParam userParam) throws Exception;
 }

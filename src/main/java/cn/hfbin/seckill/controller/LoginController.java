@@ -40,7 +40,7 @@ public class LoginController {
     MQSender mqSender;
     @RequestMapping("/login")
     @ResponseBody
-    public Result<User> doLogin(HttpServletResponse response, HttpSession session , @Valid LoginParam loginParam) {
+    public Result<User> doLogin(HttpServletResponse response, HttpSession session , @Valid LoginParam loginParam) throws Exception {
         Result<User> login = userService.login(loginParam);
         if (login.isSuccess()){
             CookieUtil.writeLoginToken(response,session.getId());

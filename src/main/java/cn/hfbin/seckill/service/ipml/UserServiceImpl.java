@@ -7,12 +7,13 @@ import cn.hfbin.seckill.param.UserParam;
 import cn.hfbin.seckill.result.CodeMsg;
 import cn.hfbin.seckill.result.Result;
 import cn.hfbin.seckill.service.UserService;
-import cn.hfbin.seckill.util.MD5Util;
+import cn.hfbin.seckill.util.EncryptionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
  * Created by: HuangFuBin
@@ -22,21 +23,20 @@ import java.util.*;
  */
 @Service("userService")
 public class UserServiceImpl implements UserService{
-
     @Autowired
     UserMapper userMapper;
+    private final Logger logger=Logger.getLogger(String.valueOf(UserServiceImpl.class));
 
     @Override
-    public Result<User> login(LoginParam loginParam) {
+    public Result<User> login(LoginParam loginParam) throws Exception {
 
         User user = userMapper.checkPhone(loginParam.getMobile());
         if(user == null){
             return Result.error(CodeMsg.MOBILE_NOT_EXIST);
         }
-        String dbPwd= user.getPassword();
-        String saltDB = user.getSalt();
-        String calcPass = MD5Util.formPassToDBPass(loginParam.getPassword(), saltDB);
-        if(!StringUtils.equals(dbPwd , calcPass)){
+        String decPwd = EncryptionUtils.decrypt(user.getPassword());
+        String calcPass = loginParam.getPassword();
+        if(!StringUtils.equals(decPwd , calcPass)){
             return Result.error(CodeMsg.PASSWORD_ERROR);
         }
         user.setPassword(StringUtils.EMPTY);
@@ -51,13 +51,12 @@ public class UserServiceImpl implements UserService{
         return Result.success(userList);
     }
 
-    public Result<User> createUser(UserParam userParam) {
+    public Result<User> createUser(UserParam userParam) throws Exception {
         // 创建User对象并设置属性
         User user = new User();
         user.setUserName(userParam.getUser_name());
-        user.setPassword(userParam.getPassword());
+        user.setPassword(EncryptionUtils.encrypt(userParam.getPassword()));
         user.setPhone(userParam.getPhone());
-        user.setSalt(MD5Util.salt);
         user.setHead(userParam.getHead());
         user.setLoginCount(userParam.getLoginCount());
         //取当前时间设置为注册时间

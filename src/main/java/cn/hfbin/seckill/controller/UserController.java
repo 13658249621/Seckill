@@ -32,7 +32,7 @@ public class UserController {
     }
     @PostMapping("/create")
     @ResponseBody
-    public Result<User> createUser(@Valid UserParam userParam) {
+    public Result<User> createUser(@Valid UserParam userParam) throws Exception {
 
         // 调用Service层的创建用户方法
         Result<User> result = userService.createUser(userParam);
