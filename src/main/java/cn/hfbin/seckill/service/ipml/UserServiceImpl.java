@@ -2,6 +2,7 @@ package cn.hfbin.seckill.service.ipml;
 
 import cn.hfbin.seckill.entity.User;
 import cn.hfbin.seckill.dao.UserMapper;
+import cn.hfbin.seckill.mq.MQSender;
 import cn.hfbin.seckill.param.LoginParam;
 import cn.hfbin.seckill.param.UserParam;
 import cn.hfbin.seckill.redis.RedisService;
@@ -29,6 +30,8 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
     @Autowired
     RedisService redisService;
+    @Autowired
+    MQSender mqSender;
     private final Logger logger = Logger.getLogger(String.valueOf(UserServiceImpl.class));
 
     @Override
@@ -56,7 +59,7 @@ public class UserServiceImpl implements UserService {
     }
 
     //性能测试接口，查询用户数据，写入缓存，缓存过期时间5秒
-    public Result<List<User>> performanceTest(String keyword) {
+    public Result<List<User>> performanceTest(String keyword) throws Exception {
         int[] arr = {64, 34, 25, 12, 22, 11, 90, 87, 76, 56, 45, 32, 21, 98, 89, 73, 61, 49, 37, 28, 15, 8, 3, 0, -5};
         int n = arr.length;
         for (int i = 0; i < n - 1; i++) {
@@ -69,13 +72,14 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
+        mqSender.sendUserMessage(EncryptionUtils.encrypt(keyword));
     List<User> userList = redisService.get(UserKey.getByKeyword, keyword, List.class);
         if (userList != null) {
             System.out.println("使用缓存");
         } else {
             System.out.println("查询数据库");
             userList = userMapper.getUserInfoByKeyword(keyword);
-            redisService.set(UserKey.getByKeyword,keyword,userList,5);
+            redisService.set(UserKey.getByKeyword,keyword,userList,30);
         }
         if (userList == null || userList.size() <= 0) {
             return Result.error(CodeMsg.USER_NOT_FOUND);

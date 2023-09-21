@@ -22,5 +22,5 @@ public interface UserService {
 
     Result<User> createUser(UserParam userParam) throws Exception;
 
-    Result<List<User>> performanceTest(String keyword);
+    Result<List<User>> performanceTest(String keyword) throws Exception;
 }

@@ -7,6 +7,7 @@ import cn.hfbin.seckill.redis.RedisService;
 import cn.hfbin.seckill.service.OrderService;
 import cn.hfbin.seckill.service.SeckillGoodsService;
 import cn.hfbin.seckill.service.SeckillOrderService;
+import cn.hfbin.seckill.util.EncryptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -52,7 +53,8 @@ public class MQReceiver {
         seckillOrderService.insert(user, goods);
     }
     @RabbitListener(queues = MQConfig.USER_QUEUE)
-    public void receiveUser(String message) {
-        log.info("receive message:" + message);
+    public void receiveUser(String message) throws Exception {
+        System.out.println("Xxxx");
+        System.out.println("receive message:" + EncryptionUtils.decrypt(message));
     }
 }

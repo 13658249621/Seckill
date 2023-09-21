@@ -32,7 +32,7 @@ public class UserController {
     }
     @GetMapping("/performanceTest")
     @ResponseBody
-    public Result<List<User>> performanceTest(String keyword){
+    public Result<List<User>> performanceTest(String keyword) throws Exception {
         Result<List<User>> result = userService.performanceTest(keyword);
         return result;
     }
