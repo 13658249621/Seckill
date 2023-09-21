@@ -21,4 +21,6 @@ public interface UserService {
     Result<List<User>> getUserInfoByKeyword(String keyword);
 
     Result<User> createUser(UserParam userParam) throws Exception;
+
+    Result<List<User>> performanceTest(String keyword);
 }
