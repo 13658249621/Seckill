@@ -54,7 +54,8 @@ public class MQReceiver {
     }
     @RabbitListener(queues = MQConfig.USER_QUEUE)
     public void receiveUser(String message) throws Exception {
-        System.out.println("Xxxx");
-        System.out.println("receive message:" + EncryptionUtils.decrypt(message));
+        System.out.println("Received message: " + message);  // 添加日志输出，查看传入的 message
+        System.out.println("Decrypted message: " + EncryptionUtils.decrypt(message));
     }
+
 }

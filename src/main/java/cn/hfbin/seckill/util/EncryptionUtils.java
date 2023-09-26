@@ -5,6 +5,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.AlgorithmParameters;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -36,21 +37,27 @@ public class EncryptionUtils {
     }
 
     public static String decrypt(String encryptedText) throws Exception {
-        byte[] combined = Base64.getDecoder().decode(encryptedText);
-        byte[] salt = new byte[KEY_LENGTH / 8];
-        byte[] iv = new byte[IV_LENGTH];
-        byte[] encrypted = new byte[combined.length - salt.length - iv.length];
+        try {
+            byte[] combined = Base64.getDecoder().decode(encryptedText);
+            byte[] salt = new byte[KEY_LENGTH / 8];
+            byte[] iv = new byte[IV_LENGTH];
+            byte[] encrypted = new byte[combined.length - salt.length - iv.length];
 
-        System.arraycopy(combined, 0, salt, 0, salt.length);
-        System.arraycopy(combined, salt.length, iv, 0, iv.length);
-        System.arraycopy(combined, salt.length + iv.length, encrypted, 0, encrypted.length);
+            System.arraycopy(combined, 0, salt, 0, salt.length);
+            System.arraycopy(combined, salt.length, iv, 0, iv.length);
+            System.arraycopy(combined, salt.length + iv.length, encrypted, 0, encrypted.length);
 
-        SecretKey secretKey = generateKey();
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
+            SecretKey secretKey = generateKey();
+            Cipher cipher = Cipher.getInstance(ALGORITHM);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
 
-        byte[] decryptedText = cipher.doFinal(encrypted);
-        return new String(decryptedText, "UTF-8");
+            byte[] decryptedText = cipher.doFinal(encrypted);
+            return new String(decryptedText, StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            // 捕获Base64解码异常
+            System.err.println("Invalid Base64 encoded message: " + encryptedText);
+            throw e;  // 抛出异常
+        }
     }
 
     private static byte[] generateSalt() {
