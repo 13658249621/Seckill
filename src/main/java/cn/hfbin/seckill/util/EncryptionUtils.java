@@ -32,11 +32,16 @@ public class EncryptionUtils {
         System.arraycopy(salt, 0, combined, 0, salt.length);
         System.arraycopy(iv, 0, combined, salt.length, iv.length);
         System.arraycopy(encryptedText, 0, combined, salt.length + iv.length, encryptedText.length);
-
-        return Base64.getEncoder().encodeToString(combined);
+        String res=Base64.getEncoder().encodeToString(combined);
+        System.out.println("xxxx加密结果:"+res);
+        return res;
     }
 
     public static String decrypt(String encryptedText) throws Exception {
+        if (!isBase64(encryptedText)) {
+            System.err.println("xxxx非法的字符: " + encryptedText);
+            return null;
+        }
         try {
             byte[] combined = Base64.getDecoder().decode(encryptedText);
             byte[] salt = new byte[KEY_LENGTH / 8];
@@ -52,6 +57,7 @@ public class EncryptionUtils {
             cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
 
             byte[] decryptedText = cipher.doFinal(encrypted);
+            System.out.println("xxxx解密结果:"+new String(decryptedText, StandardCharsets.UTF_8));
             return new String(decryptedText, StandardCharsets.UTF_8);
         } catch (IllegalArgumentException e) {
             // 捕获Base64解码异常
@@ -76,6 +82,9 @@ public class EncryptionUtils {
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         SecretKey tmp = factory.generateSecret(spec);
         return new SecretKeySpec(tmp.getEncoded(), "AES");
+    }
+    public static boolean isBase64(String str) {
+        return str.matches("^[A-Za-z0-9+/]+[=]{0,2}$");
     }
 
     public static void main(String[] args) throws Exception {
