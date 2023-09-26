@@ -58,6 +58,12 @@ public class EncryptionUtils {
             System.err.println("Invalid Base64 encoded message: " + encryptedText);
             throw e;  // 抛出异常
         }
+        catch (Exception e) {
+            System.err.println("Error decrypting message: " + e.getMessage());
+            e.printStackTrace();
+            // 返回错误信息或执行其他处理
+            return null;
+        }
     }
 
     private static byte[] generateSalt() {

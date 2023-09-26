@@ -11,6 +11,7 @@ import cn.hfbin.seckill.result.CodeMsg;
 import cn.hfbin.seckill.result.Result;
 import cn.hfbin.seckill.service.UserService;
 import cn.hfbin.seckill.util.CookieUtil;
+import cn.hfbin.seckill.util.EncryptionUtils;
 import cn.hfbin.seckill.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,7 +47,7 @@ public class LoginController {
             CookieUtil.writeLoginToken(response,session.getId());
             redisService.set(UserKey.getByName , session.getId() ,login.getData(), Const.RedisCacheExtime.REDIS_SESSION_EXTIME );
         }
-        mqSender.sendUserMessage(JsonUtil.obj2String(login));
+        mqSender.sendUserMessage(EncryptionUtils.encrypt(JsonUtil.obj2String(login)));
         return login;
     }
 
